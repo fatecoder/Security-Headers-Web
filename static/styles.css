@@ -1,0 +1,26 @@
+body {
+	margin: 0;
+}
+
+#nav-bar {
+	background-color: lightgreen;
+	padding: 1%;
+}
+
+#form-inputs {
+	width: 40%;
+	background-color: red;
+	margin: 0 auto;
+	margin-top: 10%;
+	padding: 1%;
+}
+
+#text-input {
+	border: none;
+	width: 70%;
+}
+
+#submit-button {
+	border: none;
+	width: 28%;
+}
