@@ -4,9 +4,10 @@ from flask import Flask, request, render_template
 
 app = Flask(__name__)
 
-@app.route("/")
+@app.route("/", methods=["GET"])
 def index():
-	print "hello world"
+	URLstring = request.args.get("url")
+	print URLstring
 	return render_template("index.html")
 
 app.run(debug=True)

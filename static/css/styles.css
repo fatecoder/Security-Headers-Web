@@ -1,26 +1,30 @@
 body {
 	margin: 0;
+	background-color: grey;
 }
 
 #nav-bar {
 	background-color: lightgreen;
-	padding: 1%;
+	overflow: hidden;
 }
 
 #form-inputs {
-	width: 40%;
 	background-color: red;
+	width: 60%;
+	height: 50px;
 	margin: 0 auto;
-	margin-top: 10%;
-	padding: 1%;
+	margin-top: 20%;
 }
 
 #text-input {
 	border: none;
 	width: 70%;
+	//height: 200%;
+	font-size: 25px;
 }
 
 #submit-button {
 	border: none;
-	width: 28%;
+	width: 15%;
+	height: 50%;
 }
