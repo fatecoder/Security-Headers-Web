@@ -4,27 +4,40 @@ body {
 }
 
 #nav-bar {
-	background-color: lightgreen;
+	background-color: tomato;
 	overflow: hidden;
 }
 
+#logo {
+	margin-left: 3%;
+}
+
 #form-inputs {
-	background-color: red;
-	width: 60%;
+	width: 50%;
 	height: 50px;
 	margin: 0 auto;
-	margin-top: 20%;
+	margin-top: 5%;
 }
 
 #text-input {
+	margin-top: 0;
 	border: none;
 	width: 70%;
-	//height: 200%;
-	font-size: 25px;
+	font-size: 20px;
+	border-radius: 6px;
+	padding: 8px;
 }
 
 #submit-button {
+	margin-top: 0;
 	border: none;
-	width: 15%;
-	height: 50%;
+	width: 20%;
+	font-size: 20px;
+	border-radius: 6px;
+	padding: 8px;
+}
+
+#table-one {
+	margin-top: 5%;
+	margin-left: 3%
 }
