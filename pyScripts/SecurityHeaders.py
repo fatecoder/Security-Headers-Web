@@ -1,6 +1,6 @@
 #!/bin/python
 
-import urllib2, socket
+import urllib2, socket, sys
 from urlparse import urlparse
 
 class SecurityHeaderVerifier(object):
@@ -17,7 +17,8 @@ class SecurityHeaderVerifier(object):
 			if key in self.__security_headers:
 				accum = 0
 				self.__security_headers[key][1] = "Found"
-					for attrib in info[key]:
+				for attrib in self.__security_headers[key][1]:
+					if attrib in info[key]:
 						accum += 1
 					if accum == self.__security_headers[key][2]:
 						self.__security_headers[key][3] = "Secure"
@@ -38,33 +39,34 @@ class SecurityHeaderVerifier(object):
 				dictionary_info[key] = self.__security_headers[key][4]
 		return dictionary_info
 
-	def get_all_info(self, url):
-		header = {"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36"}
-		request = urllib2.Request(sys.argv[1], headers=header)
-		content = urllib2.urlopen(request, timeout=2)
-		info = content.info()
+	def get_all_info(self, content):
 		ip = socket.gethostbyname(urlparse(content.geturl()).hostname)
-		raw_headers = content.geturl()
+		url = content.geturl()
+		info = content.info()
+
 		self.change_header_status(info)
 		self.get_verified_headers()
 		self.get_header_not_found_info()
 
 	def page_status(self, string):
 		try:
-			self.get_all_info(string)
-			return True
+			header = {"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36"}
+			request = urllib2.Request(sys.argv[1], headers=header)
+			content = urllib2.urlopen(request, timeout=2)
+			return content
 		except (ValueError, urllib2.URLError), e:
 			return False
 
 	def do_search(self, string):
 		protocols = [" ", "https://", "http://"]
-
+		content = self.page_status(string)
 		for element in protocols:
-			if self.page_status(string):
+			if content != False:
+				self.get_all_info(content)
 				break;
 			elif element == 2:
 				print "Not found"
 
 secure = SecurityHeaderVerifier()
 
-print secure.page_status(sys.argv[1])
+print secure.do_search(sys.argv[1])
