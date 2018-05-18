@@ -21,6 +21,7 @@ def index():
 		secure.do_search(URLstring)
 		return render_template("index.html", table = table)
 	else:
+		secure.do_search(URLstring)
 		return render_template("index.html")
 
 app.run(debug=True)
