@@ -45,28 +45,24 @@ class SecurityHeaderVerifier(object):
 		info = content.info()
 
 		self.change_header_status(info)
-		self.get_verified_headers()
-		self.get_header_not_found_info()
+		return {"ip":ip, "url":url, "ok_headers":self.get_verified_headers(),
+		"warning":self.get_header_not_found_info(), "raw_headers":info}
 
 	def page_status(self, string):
 		try:
 			header = {"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36"}
-			request = urllib2.Request(sys.argv[1], headers=header)
+			request = urllib2.Request(string, headers=header)
 			content = urllib2.urlopen(request, timeout=2)
 			return content
 		except (ValueError, urllib2.URLError), e:
 			return False
 
 	def do_search(self, string):
-		protocols = [" ", "https://", "http://"]
-		content = self.page_status(string)
-		for element in protocols:
-			if content != False:
-				self.get_all_info(content)
+		protocol = [" ", "https://", "http://"]
+		for index in range(len(protocol)):
+			content = self.page_status("%s%s" % (protocol[index], string))
+			if content:
+				return self.get_all_info(content)
 				break;
-			elif element == 2:
-				print "Not found"
-
-secure = SecurityHeaderVerifier()
-
-print secure.do_search(sys.argv[1])
+			elif index == 2:
+				return False
