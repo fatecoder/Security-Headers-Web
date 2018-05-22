@@ -1,13 +1,23 @@
 #!/bin/ptyhon
 
-from SecurityHeaders import SecurityHeaderVerifier
+from SecurityHeaders import Verifier
 import sys
 
-secure = SecurityHeaderVerifier()
+secure = Verifier()
 
-try:
-	print secure.do_search(sys.argv[1])
-except ValueError as e:
-	print "Input an URL in command line."
+info = secure.get_info(sys.argv[1])
+
+if info:
+	ip = info[0]
+	url = info[1]
+	headers = info[2]
+	checked_headers = []
+	for key in headers:
+		header_status = secure.check_header(key, headers[key])
+		if header_status:
+			print "%s: %s |=> %s!!!" % (key, headers[key], header_status)
+			checked_headers.append(key)
+else:
+	print "PAGE NOT FOUND"
 
 
