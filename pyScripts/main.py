@@ -10,18 +10,22 @@ def print_info(list):
 	print list[1]
 	for key in list[2]:
 		print "%s: %s" % (key, list[2][key])
-	secure.check_headers(list[2])
+	print "---------"
+	#print secure.check_headers(list[2])
+	headers = secure.check_headers(list[2])
+	for element in headers:
+		print element
+
 
 url = secure.replace_scheme(sys.argv[1],"https")
-content = secure.check_url(url)
+content = secure.get_all_info(url)
 if content:
-	info = secure.get_all_info(content)
-	print_info(info)
+	print_info(content)
 else:
 	url = secure.replace_scheme(sys.argv[1],"http")
-	content = secure.check_url(url)
+	content = secure.get_all_info(url)
 	if content:
-		info = secure.get_all_info(content)
-		print_info(info)
+		print_info(content)
 	else:
 		print "PAGE NOT FOUND"
+
