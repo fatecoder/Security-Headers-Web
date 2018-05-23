@@ -5,19 +5,23 @@ import sys
 
 secure = Verifier()
 
-info = secure.get_info(sys.argv[1])
+def print_info(list):
+	print list[0]
+	print list[1]
+	for key in list[2]:
+		print "%s: %s" % (key, list[2][key])
+	secure.check_headers(list[2])
 
-if info:
-	ip = info[0]
-	url = info[1]
-	headers = info[2]
-	checked_headers = []
-	for key in headers:
-		header_status = secure.check_header(key, headers[key])
-		if header_status:
-			print "%s: %s |=> %s!!!" % (key, headers[key], header_status)
-			checked_headers.append(key)
+url = secure.replace_scheme(sys.argv[1],"https")
+content = secure.check_url(url)
+if content:
+	info = secure.get_all_info(content)
+	print_info(info)
 else:
-	print "PAGE NOT FOUND"
-
-
+	url = secure.replace_scheme(sys.argv[1],"http")
+	content = secure.check_url(url)
+	if content:
+		info = secure.get_all_info(content)
+		print_info(info)
+	else:
+		print "PAGE NOT FOUND"
