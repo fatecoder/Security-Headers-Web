@@ -1,21 +1,27 @@
 #!/bin/ptyhon
 
 from SecurityHeaders import Verifier
+from colorama import Fore, Back, init
 import sys
 
+init(autoreset=True)
 secure = Verifier()
 
 def print_info(list):
-	print list[0]
-	print list[1]
+	headers = secure.check_headers(list[2])
+	print "URL: %s" % list[0]
+	print "IP address: %s" % list[1]
+	print "---------HEADERS---------"
+	for element in headers:
+		if "SECURE" in element:
+			print Fore.GREEN + element
+		elif "WARNING" in element:
+			print Fore.YELLOW + element
+		else:
+			print Fore.RED + element
+	print "---------RAW HEADERS---------"
 	for key in list[2]:
 		print "%s: %s" % (key, list[2][key])
-	print "---------"
-	#print secure.check_headers(list[2])
-	headers = secure.check_headers(list[2])
-	for element in headers:
-		print element
-
 
 url = secure.replace_scheme(sys.argv[1],"https")
 content = secure.get_all_info(url)
@@ -28,4 +34,3 @@ else:
 		print_info(content)
 	else:
 		print "PAGE NOT FOUND"
-

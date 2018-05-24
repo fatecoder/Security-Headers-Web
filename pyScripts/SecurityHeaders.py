@@ -7,30 +7,30 @@ class Verifier(object):
 
 	__security_headers = {  "content-security-policy":[["default-src", "script-src", "connect-src", "img-src", "style-src"], "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self';"],
 							"x-xss-protection":[["1;", "mode=block"],"1; mode=block"],
-							"strict-transport-security":[["max-age", "includeSubDomains"],"max-age=YOUR MAX AGE; includeSubDomains"],
+							"strict-transport-security":[["max-age", "includeSubDomains"],"max-age=YOUR_MAX_AGE; includeSubDomains"],
 							"x-frame-options":[["DENY"], "DENY"],
 							"public-keys-pins":[["pin-sha256","max-age", "includeSubDomains", "report-uri"], "pin-sha256=PRIMARY_KEY; pin-sha256=BACKUP_KEY; max-age=PIN_CACHE_EXPIRE_TIME; includeSubDomains; report-uri=YOUR_SITE_TO_REPORT"],
 							"x-content-type-options":[["nosniff"], "nosniff"] }
 
 	def check_headers(self, headers):
 		list = []
-		for key in self.__security_headers:
-			r = self.__security_headers[key][1]
-			if self.__security_headers[key][0] in headers[key]:
-				status = self.__check_header_values(key, headers[key])
-				#print "%s: %s |=> %s" % (key, headers[key], status)
+		keys = self.__security_headers.keys()
+		for element in keys:
+			advise = self.__security_headers[element][1]
+			if element in headers:
+				status = self.__check_header_values(element, headers[element])
 				if status == "WARNING":
-					list.append("%s: %s |=> %s $ %s" % (key, headers[key], status, r))
+					list.append("%s: %s |=> %s\n  $RECOMMENDED %s: %s" % (element, headers[element], status, element, advise))
 				else:
-					list.append("%s: %s |=> %s" % (key, headers[key], status))
-					print status
+					list.append("%s: %s |=> %s" % (element, headers[element], status))
 			else:
-				headers.append("%s |=> NOT FOUND $ %s" % (key, r))
-		return headers
+				list.append("%s |=> NOT FOUND\n  $RECOMMENDED %s: %s" % (element, element, advise))
+		return list
 
 	def __check_header_values(self, key, value):
 		status = "SECURE"
-		for attrib in self.__security_headers[key][0]:
+		directives = self.__security_headers[key][0]
+		for attrib in directives:
 			if attrib not in value:
 				status = "WARNING"
 				break
@@ -48,7 +48,7 @@ class Verifier(object):
 			ip = socket.gethostbyname(urlparse(url).hostname)
 			for key in info:
 				raw_headers[key] = info[key]
-			return [ip, url, raw_headers]
+			return [url, ip, raw_headers]
 		except:
 			return False
 
