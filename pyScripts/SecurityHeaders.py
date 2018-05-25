@@ -57,4 +57,3 @@ class Verifier(object):
 		new_string = parse._replace(scheme=protocol)
 		url = urlunparse(new_string).replace(":///", "://")
 		return url
-

@@ -4,6 +4,7 @@ body {
 }
 
 #nav-bar {
+	width: 100%;
 	background-color: tomato;
 	overflow: hidden;
 }
@@ -37,7 +38,25 @@ body {
 	padding: 8px;
 }
 
-#table-one {
-	margin-top: 5%;
-	margin-left: 3%
+.raw-table {
+	margin-left: 5%;
+	margin-right: 5%;
+	border-collapse: collapse;
+	width: 90%;
+	border: 1px solid black;
+}
+
+.table-head {
+	text-align: center;
+}
+
+.column1 {
+	width: 20%;
+	border: 1px solid black;
+}
+
+.column2 {
+	width: 70%;
+	word-break: break-word;
+	border: 1px solid black;
 }

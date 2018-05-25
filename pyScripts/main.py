@@ -14,11 +14,11 @@ def print_info(list):
 	print "---------HEADERS---------"
 	for element in headers:
 		if "SECURE" in element:
-			print Fore.GREEN + element
+			print "%s%s\n" % (Fore.GREEN, element)
 		elif "WARNING" in element:
-			print Fore.YELLOW + element
+			print "%s%s\n" % (Fore.YELLOW, element)
 		else:
-			print Fore.RED + element
+			print "%s%s\n" % (Fore.RED, element)
 	print "---------RAW HEADERS---------"
 	for key in list[2]:
 		print "%s: %s" % (key, list[2][key])
