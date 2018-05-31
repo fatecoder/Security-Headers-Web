@@ -1,34 +1,35 @@
 #!/bin/python
 
-import urllib2, socket, sys
+import urllib2, socket, time
 from urlparse import urlparse, urlunparse
 
 class Verifier(object):
 
-	__security_headers = {  "content-security-policy":[["default-src", "script-src", "connect-src", "img-src", "style-src"], "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self';"],
+	__security_headers = {  "content-security-policy":[["default-src 'self'"], "default-src 'self'"],
 							"x-xss-protection":[["1;", "mode=block"],"1; mode=block"],
 							"strict-transport-security":[["max-age", "includeSubDomains"],"max-age=YOUR_MAX_AGE; includeSubDomains"],
 							"x-frame-options":[["DENY"], "DENY"],
 							"public-keys-pins":[["pin-sha256","max-age", "includeSubDomains", "report-uri"], "pin-sha256=PRIMARY_KEY; pin-sha256=BACKUP_KEY; max-age=PIN_CACHE_EXPIRE_TIME; includeSubDomains; report-uri=YOUR_SITE_TO_REPORT"],
-							"x-content-type-options":[["nosniff"], "nosniff"] }
+							"x-content-type-options":[["nosniff"], "nosniff"],
+							"set-cookie":[["Secure", "HttpOnly"], "COOKIE_NAME=COOKIE_VALUE; Secure; HttpOnly"],
+							"referrer-policy":[["no-referrer-when-downgrade"],"no-referrer-when-downgrade"] }
 
-	def check_headers(self, headers):
+	def check_headers(self, raw_headers):
 		list = []
 		keys = self.__security_headers.keys()
-		for element in keys:
-			advise = self.__security_headers[element][1]
-			if element in headers:
-				status = self.__check_header_values(element, headers[element])
+		for value in keys:
+			if value in raw_headers:
+				status = self.__check_header_values(value, raw_headers[value])
 				if status == "WARNING":
-					list.append("%s: %s |=> %s\n  $RECOMMENDED %s: %s" % (element, headers[element], status, element, advise))
+					list.append("%s %s RECOMMENDED %s" % (status, value, self.__security_headers[value][1]))
 				else:
-					list.append("%s: %s |=> %s" % (element, headers[element], status))
+					list.append("%s %s: %s" % (status, value, raw_headers[value]))
 			else:
-				list.append("%s |=> NOT FOUND\n  $RECOMMENDED %s: %s" % (element, element, advise))
+				list.append("NOT-FOUND %s RECOMMENDED %s" % (value, self.__security_headers[value][1]))
 		return list
 
 	def __check_header_values(self, key, value):
-		status = "SECURE"
+		status = "SECURE" #
 		directives = self.__security_headers[key][0]
 		for attrib in directives:
 			if attrib not in value:
@@ -36,19 +37,32 @@ class Verifier(object):
 				break
 		return status
 
-	def get_all_info(self, string):
-		try:
-			raw_headers = {}
-			agent_header = {"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36"}
-			request = urllib2.Request(string, headers=agent_header)
-			content = urllib2.urlopen(request, timeout=3)
-
-			info = content.info()
+	def get_page_info(self, url):
+		headers = {}
+		content = self.__get_content(url)
+		if content != None:
 			url = content.geturl()
 			ip = socket.gethostbyname(urlparse(url).hostname)
-			for key in info:
-				raw_headers[key] = info[key]
-			return [url, ip, raw_headers]
+			now_time = time.strftime('%l:%M %p %Z on %b %d, %Y')
+			for header in content.info():
+				headers[header] = content.info()[header]
+			return [url, ip, now_time, headers]
+
+	def __get_content(self, url):
+		data = None
+		if self.__check_url(url, "https"):
+			data = self.__check_url(url, "https")
+		elif self.__check_url(url, "http"):
+			data = self.__check_url(url, "http")
+		return data
+
+	def __check_url(self, url, protocol):
+		new_url = self.replace_scheme(url, protocol)
+		agent_header = {"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36"}
+		request = urllib2.Request(new_url, headers=agent_header)
+		try:
+			content = urllib2.urlopen(request, timeout=3)
+			return content
 		except:
 			return False
 

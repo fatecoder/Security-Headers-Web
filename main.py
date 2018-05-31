@@ -2,40 +2,63 @@
 
 from flask import Flask, request, render_template, Markup
 from pyScripts.SecurityHeaders import Verifier
-secure = Verifier()
 
 app = Flask(__name__)
 
-def get_content(string):
-	url = secure.replace_scheme(string,"https")
-	content = secure.get_all_info(url)
-	if content:
-		return secure.get_all_info(url)
-	else:
-		url = secure.replace_scheme(string,"http")
-		content = secure.get_all_info(url)
-		if content:
-			return secure.get_all_info(url)
-		else:
-			return False
+secure = Verifier()
 
-def make_table(dictionary):
-	table = "<table class='raw-table'><thead class='table-head'><tr><td colspan='2'>RAW HEADERS</td></tr></thead><tbody>"
-	for key in dictionary:
-		table += "<tr><td class='column1'>%s</td><td class='column2'>%s</td></tr>" % (key, dictionary[key])
+def make_report_summary_table(list_security_headers):
+	table = "<table class='report-table'><thead class='table-head-up'><tr><td colspan='3'>Report Summary</td></tr></thead>"\
+			"<thead class='table-head-down'><tr><td>Security Header</td><td>Value</td><td>Recommended</td></tr></thead><tbody>"
+
+	for header_string in list_security_headers:
+		if "SECURE" in header_string:
+			header_string = header_string.replace("SECURE", "")
+			splitted_string = header_string.split(":")
+			table += "<tr><td class='report-column1'><li id='img-secure'>%s</td><td class='report-column2'>%s</td><td class='report-column3'>%s</td></tr>" % (splitted_string[0], splitted_string[1], "")
+		elif "WARNING" in header_string:
+			header_string = header_string.replace("WARNING", "")
+			splitted_string = header_string.split("RECOMMENDED")
+			table += "<tr><td class='report-column1'><li id='img-warning'>%s</td><td class='report-column2'>%s</td><td class='report-column3'>%s</td></tr>" % (splitted_string[0], "VALUE", splitted_string[1])
+		else:
+			header_string = header_string.replace("NOT-FOUND", "")
+			splitted_string = header_string.split("RECOMMENDED")
+			table += "<tr><td class='report-column1'><li id='img-not_found'>%s</td><td class='report-column2'>%s</td><td class='report-column3'>%s</td></tr>" % (splitted_string[0], "", splitted_string[1])
+	return table
+
+def make_raw_headers_table(raw_headers):
+	table = "<table class='raw-table'><thead class='table-head-up'><tr><td colspan='2'>Raw Headers</td></tr></thead><tbody>"
+	for header in raw_headers:
+		table += "<tr><td class='raw-column1'>%s</td><td class='raw-column2'>%s</td></tr>" % (header, raw_headers[header])
 	return table + "</tbody></table>"
 
-@app.route("/", methods=["GET"])
+@app.route("/", methods=["GET"]) #
 def index():
+	report_summary_table = ""
+	raw_headers_table = ""
+	not_found = ""
+	url = ""
+	ip = ""
 	URLstring = request.args.get("url")
 	if URLstring:
-		c = get_content(URLstring)
-		if c:
-			return render_template("index.html", table = Markup(make_table(c[2])))
+		page_info = secure.get_page_info(URLstring)
+		if page_info != None:
+			url = page_info[0]
+			ip = page_info[1]
+			raw_headers_dictionary = page_info[3]
+
+			list = secure.check_headers(raw_headers_dictionary)
+			report_summary_table = Markup(make_report_summary_table(list))
+			raw_headers_table = Markup(make_raw_headers_table(raw_headers_dictionary))
+
 		else:
-			return render_template("index.html", ip = "PAGE NOT FOUND")
-	else:
-		return render_template("index.html")
+			not_found = "PAGE NOT FOUND"
+	return render_template("index.html",
+							url_site = url,
+							ip_address = ip,
+							report_summary_table = report_summary_table,
+							raw_headers_table = raw_headers_table,
+							not_found = not_found)
 
 app.run(debug=True)
 

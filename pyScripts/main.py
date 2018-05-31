@@ -1,36 +1,29 @@
-#!/bin/ptyhon
+#!/bin/python
 
 from SecurityHeaders import Verifier
-from colorama import Fore, Back, init
-import sys
+from colorama import Fore, init
+import sys, requests
 
 init(autoreset=True)
-secure = Verifier()
+secure = Verifier() #
 
-def print_info(list):
-	headers = secure.check_headers(list[2])
-	print "URL: %s" % list[0]
-	print "IP address: %s" % list[1]
+def print_info(list_info):
+	headers = secure.check_headers(list_info[3])
+	print "URL: %s" % list_info[0]
+	print "IP address: %s" % list_info[1]
+	print "Report Date: %s" % list_info[2]
 	print "---------HEADERS---------"
 	for element in headers:
 		if "SECURE" in element:
-			print "%s%s\n" % (Fore.GREEN, element)
+			print Fore.GREEN + element
 		elif "WARNING" in element:
-			print "%s%s\n" % (Fore.YELLOW, element)
+			print Fore.YELLOW + element
 		else:
-			print "%s%s\n" % (Fore.RED, element)
+			print Fore.RED + element
 	print "---------RAW HEADERS---------"
-	for key in list[2]:
-		print "%s: %s" % (key, list[2][key])
+	for key in list_info[3]:
+		print "%s: %s" % (key, list_info[3][key])
 
-url = secure.replace_scheme(sys.argv[1],"https")
-content = secure.get_all_info(url)
-if content:
-	print_info(content)
-else:
-	url = secure.replace_scheme(sys.argv[1],"http")
-	content = secure.get_all_info(url)
-	if content:
-		print_info(content)
-	else:
-		print "PAGE NOT FOUND"
+list_info = secure.get_page_info(sys.argv[1])
+print_info(list_info)
+
