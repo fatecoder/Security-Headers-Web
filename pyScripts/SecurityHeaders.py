@@ -29,13 +29,13 @@ class Verifier(object):
 		return list
 
 	def __check_header_values(self, key, value):
-		status = "SECURE" #
 		directives = self.__security_headers[key][0]
+		total_directives = len(self.__security_headers[key][0])
+		total = 0
 		for attrib in directives:
-			if attrib not in value:
-				status = "WARNING"
-				break
-		return status
+			if attrib in value:
+				total += 1
+		return "WARNING" if total == total_directives else "SECURE"
 
 	def get_page_info(self, url):
 		headers = {}
@@ -50,10 +50,12 @@ class Verifier(object):
 
 	def __get_content(self, url):
 		data = None
-		if self.__check_url(url, "https"):
-			data = self.__check_url(url, "https")
-		elif self.__check_url(url, "http"):
-			data = self.__check_url(url, "http")
+		data_https = self.__check_url(url, "https")
+		data_http = self.__check_url(url, "http")
+		if data_https:
+			data = data_https
+		elif data_http:
+			data = data_http
 		return data
 
 	def __check_url(self, url, protocol):
@@ -71,3 +73,4 @@ class Verifier(object):
 		new_string = parse._replace(scheme=protocol)
 		url = urlunparse(new_string).replace(":///", "://")
 		return url
+|
