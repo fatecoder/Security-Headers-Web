@@ -1,16 +1,20 @@
 body {
 	margin: 0;
-	background-color: grey;
+	background-color: #4DB6AC;
+	font-family: "Sans-Serif";
+	font-size: 14px;
+	color: #212121;
 }
 
 #nav-bar {
 	width: 100%;
-	background-color: tomato;
+	background-color: #006064;
 	overflow: hidden;
 }
 
 #logo {
-	margin-left: 3%;
+	margin-left: 5%;
+	color: #FFF;
 }
 
 #form-inputs {
@@ -29,6 +33,10 @@ body {
 	padding: 8px;
 }
 
+#text-input:focus {
+	outline-color: #4CAF50;
+}
+
 #submit-button {
 	margin-top: 0;
 	border: none;
@@ -36,26 +44,47 @@ body {
 	font-size: 20px;
 	border-radius: 6px;
 	padding: 8px;
+	background-color: #4CAF50;
+	color: #FFF;
+	font-weight: bold;
 }
 
-.raw-table, .report-table {
-	margin-top: 10%;
+#submit-button:hover {
+	background-color: #FF5722;
+}
+
+p {
+	background-color: #FFF;
+	border-radius: 10px;
+	margin-left: 5%;
+	margin-right: 5%;
+	padding: 3px;
+}
+
+.report-table, .raw-table {
+	margin-top: 6%;
 	margin-left: 5%;
 	margin-right: 5%;
 	border-collapse: collapse;
 	width: 90%;
-	border: 1px solid black;
+	border: 1px solid #4DB6AC;
+	background-color: #FFF;
+}
+
+.raw-table {
+	margin-bottom: 5%;
 }
 
 .table-head-up {
 	text-align: center;
 	font-weight: bold;
+	font-size: 18px;
 }
 
 .table-head-down {
 	text-align: center;
 	font-weight: bold;
-	border: 1px solid black;
+	border: 1px solid #4DB6AC;
 }
 
 div {
@@ -76,24 +105,24 @@ div {
 
 .report-column1, .report-column2 {
 	width: 25%;
-	border: 1px solid black;
+	word-break: break-word;
 }
 
 .report-column3 {
 	width: 40%;
-	border: 1px solid black;
 	word-break: break-word;
+}
+
+.raw-column1, .raw-column2, .report-column1, .report-column2, .report-column3 {
+	border: 1px solid #4DB6AC;
+	padding: 7px 10px 7px 10px;
 }
 
 .raw-column1 {
 	width: 20%;
-	border: 1px solid black;
-	padding: 3px 10px 3px 10px;
 }
 
 .raw-column2 {
 	width: 70%;
 	word-break: break-word;
-	border: 1px solid black;
-	padding: 3px 10px 3px 10px;
 }
