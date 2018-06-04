@@ -38,13 +38,8 @@ class Verifier(object):
 		total = 0
 		for attrib in directives:
 			if attrib in value:
-<<<<<<< HEAD
 				total = total + 1
 		return "WARNING" if total != total_directives else "SECURE"
-=======
-				total += 1
-		return "WARNING" if total == total_directives else "SECURE"
->>>>>>> 6e0d1d9c38828e893fae3fb624c5e800170bb28e
 
 	def get_page_info(self, url):
 		headers = {}
@@ -58,10 +53,7 @@ class Verifier(object):
 
 	def __get_content(self, url):
 		data = None
-<<<<<<< HEAD
 		#ternario
-=======
->>>>>>> 6e0d1d9c38828e893fae3fb624c5e800170bb28e
 		data_https = self.__check_url(url, "https")
 		data_http = self.__check_url(url, "http")
 		if data_https:
@@ -85,4 +77,3 @@ class Verifier(object):
 		new_string = parse._replace(scheme=protocol)
 		url = urlunparse(new_string).replace(":///", "://")
 		return url
-|
