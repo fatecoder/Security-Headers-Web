@@ -14,8 +14,9 @@ class Verifier(object):
 							"set-cookie":[["Secure", "HttpOnly"], "COOKIE_NAME=COOKIE_VALUE; Secure; HttpOnly"],
 							"referrer-policy":[["no-referrer-when-downgrade"],"no-referrer-when-downgrade"] }
 
-	def __cookie_security_values(self, cookies_values, secure):
 
+	def __cookie_security_values(self, cookies_values, secure):
+			
 		return 0
 
 	def check_headers(self, raw_headers):
@@ -52,14 +53,10 @@ class Verifier(object):
 			return [url, ip, headers]
 
 	def __get_content(self, url):
-		data = None
-		#ternario
-		data_https = self.__check_url(url, "https")
-		data_http = self.__check_url(url, "http")
-		if data_https:
-			data = data_https
-		elif data_http:
-			data = data_http
+		data = self.__check_url(url, "https") if self.__check_url(url, "https") else self.__check_url(url, "http")
+		print data
+		if data is False:
+			data = None
 		return data
 
 	def __check_url(self, url, protocol):

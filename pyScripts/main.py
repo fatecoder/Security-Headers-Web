@@ -5,13 +5,12 @@ from colorama import Fore, init
 import sys, requests
 
 init(autoreset=True)
-secure = Verifier() #
+verifier = Verifier() #
 
 def print_info(list_info):
-	headers = secure.check_headers(list_info[3])
+	headers = verifier.check_headers(list_info[2])
 	print "URL: %s" % list_info[0]
 	print "IP address: %s" % list_info[1]
-	print "Report Date: %s" % list_info[2]
 	print "---------HEADERS---------"
 	for element in headers:
 		if "SECURE" in element:
@@ -21,9 +20,11 @@ def print_info(list_info):
 		else:
 			print Fore.RED + element
 	print "---------RAW HEADERS---------"
-	for key in list_info[3]:
-		print "%s: %s" % (key, list_info[3][key])
+	for key in list_info[2]:
+		print "%s: %s" % (key, list_info[2][key])
 
-list_info = secure.get_page_info(sys.argv[1])
-print_info(list_info)
-
+list_info = verifier.get_page_info(sys.argv[1])
+if list_info != None:
+	print_info(list_info)
+else:
+	print "PAGE NOT FOUND"
