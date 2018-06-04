@@ -5,25 +5,16 @@ from pyScripts.SecurityHeaders import Verifier
 
 app = Flask(__name__)
 
-secure = Verifier()
+verifier = Verifier()
 
-def make_report_summary_table(list_security_headers):
+def make_report_summary_table(security_headers):
 	table = "<table class='report-table'><thead class='table-head-up'><tr><td colspan='3'>Report Summary</td></tr></thead>"\
 			"<thead class='table-head-down'><tr><td>Security Header</td><td>Value</td><td>Recommended</td></tr></thead><tbody>"
-	#hacer propiedad para SH
-	for header_string in list_security_headers:
-		if "SECURE" in header_string:
-			header_string = header_string.replace("SECURE", "")
-			splitted_string = header_string.split(":")
-			table += "<tr><td class='report-column1'><li id='img-secure'>%s</td><td class='report-column2'>%s</td><td class='report-column3'>%s</td></tr>" % (splitted_string[0], splitted_string[1], "")
-		elif "WARNING" in header_string:
-			header_string = header_string.replace("WARNING", "")
-			splitted_string = header_string.split("RECOMMENDED")
-			table += "<tr><td class='report-column1'><li id='img-warning'>%s</td><td class='report-column2'>%s</td><td class='report-column3'>%s</td></tr>" % (splitted_string[0], "VALUE", splitted_string[1])
-		else:
-			header_string = header_string.replace("NOT-FOUND", "")
-			splitted_string = header_string.split("RECOMMENDED")
-			table += "<tr><td class='report-column1'><li id='img-not_found'>%s</td><td class='report-column2'>%s</td><td class='report-column3'>%s</td></tr>" % (splitted_string[0], "", splitted_string[1])
+	for header in security_headers:
+		status = security_headers[header]["status"].lower()
+		value = security_headers[header]["value"]
+		recommended = security_headers[header]["recommended"]
+		table += "<tr><td class='report-column1'><li id='img-%s'>%s</td><td class='report-column2'>%s</td><td class='report-column3'>%s</td></tr>" % (status, header, value, recommended)
 	return table + "</tbody></table>"
 
 def make_raw_headers_table(raw_headers):
@@ -41,14 +32,12 @@ def index():
 	ip = ""
 	URLstring = request.args.get("url")
 	if URLstring:
-		page_info = secure.get_page_info(URLstring)
+		page_info = verifier.get_page_info(URLstring)
 		if page_info != None:
-			#quitar site
-			#https:// en el input
-			url = Markup("<p>URL Site: %s</p>" % page_info[0])
+			url = Markup("<p>URL: %s</p>" % page_info[0])
 			ip = Markup("<p>IP Address: %s</p>" % page_info[1])
 			raw_headers_dictionary = page_info[2]
-			list = secure.check_headers(raw_headers_dictionary)
+			list = verifier.check_headers(raw_headers_dictionary)
 			report_summary_table = Markup(make_report_summary_table(list))
 			raw_headers_table = Markup(make_raw_headers_table(raw_headers_dictionary))
 
@@ -62,4 +51,3 @@ def index():
 							not_found = not_found)
 
 app.run(debug=True)
-

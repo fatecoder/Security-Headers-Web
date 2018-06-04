@@ -14,26 +14,29 @@ class Verifier(object):
 							"set-cookie":[["Secure", "HttpOnly"], "COOKIE_NAME=COOKIE_VALUE; Secure; HttpOnly"],
 							"referrer-policy":[["no-referrer-when-downgrade"],"no-referrer-when-downgrade"] }
 
-
-	def __cookie_security_values(self, cookies_values, secure):
-			
-		return 0
+	def __cookie_values(self, values):
+		sanitized_values = ""
+		for value in self.__security_headers["set-cookie"][0]:
+			if value in values:
+				sanitized_values += "%s " % value
+		return sanitized_values
 
 	def check_headers(self, raw_headers):
-		list = []
+		security_dictionary = {}
 		keys = self.__security_headers.keys()
-		for value in keys:
-			if value in raw_headers:
-				status = self.__check_header_values(value, raw_headers[value])
-				if status == "WARNING":
-					list.append("%s %s RECOMMENDED %s" % (status, value, self.__security_headers[value][1]))
-				else:
-					list.append("%s %s: %s" % (status, value, raw_headers[value]))
-			else:
-				list.append("NOT-FOUND %s RECOMMENDED %s" % (value, self.__security_headers[value][1]))
-		return list
+		for header in keys:
+			if header in raw_headers:
+				status = self.__get_header_status(header, raw_headers[header])
+				value = raw_headers[header]
+				if header == "set-cookie":
+					value = self.__cookie_values(value)
 
-	def __check_header_values(self, key, value):
+				security_dictionary[header] = { "status":status, "value":value, "recommended": self.__security_headers[header][1] }
+			else:
+				security_dictionary[header] = {"status":"NOT_FOUND", "value":"EMPTY", "recommended":self.__security_headers[header][1] }
+		return security_dictionary
+
+	def __get_header_status(self, key, value):
 		directives = self.__security_headers[key][0]
 		total_directives = len(self.__security_headers[key][0])
 		total = 0

@@ -103,6 +103,10 @@ div {
 	list-style-image: url('../imgs/not_found.png')
 }
 
+.report-column1 {
+	text-indent: 10px;
+}
+
 .report-column1, .report-column2 {
 	width: 25%;
 	word-break: break-word;
