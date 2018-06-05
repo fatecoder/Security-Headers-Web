@@ -1,6 +1,6 @@
 #!/bin/python
 
-from SecurityHeaders import Verifier
+from SecurityHeaders2 import Verifier
 from colorama import Fore, init
 import sys, requests
 
@@ -29,3 +29,6 @@ if list_info != None:
 	print_info(list_info)
 else:
 	print "PAGE NOT FOUND"
+
+
+print verifier.csp
