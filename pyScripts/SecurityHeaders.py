@@ -15,11 +15,11 @@ class Verifier(object):
 							"referrer-policy":[["no-referrer-when-downgrade"],"no-referrer-when-downgrade"] }
 
 	def __cookie_values(self, values):
-		sanitized_values = ""
+		filtered_values = ""
 		for value in self.__security_headers["set-cookie"][0]:
 			if value in values:
-				sanitized_values += "%s " % value
-		return sanitized_values
+				filtered_values += "%s " % value
+		return filtered_values
 
 	def check_headers(self, raw_headers):
 		security_dictionary = {}
@@ -57,7 +57,6 @@ class Verifier(object):
 
 	def __get_content(self, url):
 		data = self.__check_url(url, "https") if self.__check_url(url, "https") else self.__check_url(url, "http")
-		print data
 		if data is False:
 			data = None
 		return data

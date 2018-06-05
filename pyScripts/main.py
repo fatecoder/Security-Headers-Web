@@ -13,12 +13,13 @@ def print_info(list_info):
 	print "IP address: %s" % list_info[1]
 	print "---------HEADERS---------"
 	for header in security:
-		if security[header]["status"] == "SECURE":
+		status = security[header]["status"]
+		if status == "SECURE":
 			print "%s%s: %s" % (Fore.GREEN, header, security[header]["value"])
-		elif security[header]["status"] == "WARNING":
+		elif status == "WARNING":
 			print "%s%s: %s RECOMMENDED %s" % (Fore.YELLOW, header, security[header]["value"], security[header]["recommended"])
 		else:
-			print "%s%s: %s RECOMMENDED %s" % (Fore.RED, header, security[header]["value"], security[header]["recommended"])
+			print "%s%s: %s. RECOMMENDED %s" % (Fore.RED, header, security[header]["value"], security[header]["recommended"])
 	print "---------RAW HEADERS---------"
 	for header in list_info[2]:
 		print "%s: %s" % (header, list_info[2][header])
