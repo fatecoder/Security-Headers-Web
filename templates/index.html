@@ -4,12 +4,12 @@
 		<meta charset="utf-8">
 		<title>Security Headers Verifier</title>
 		<link rel="stylesheet" href="../static/css/styles.css"/>
+		<link rel="shortcut icon" href="../static/imgs/favicon.ico"/>
 	</head>
 	<body>
 		<nav id="nav-bar">
 			<a href="http://localhost:5000"><img id="logo" src="../static/imgs/lock.png"></a>
 		</nav>
-		<div>
 		<form id="form-inputs" method="GET" autocomplete="off" spellcheck="false">
 			<input id="text-input" type="text" name="url" placeholder="https://">
 			<input id="submit-button" type="submit" value="GO">
@@ -17,7 +17,6 @@
 		{{ url_site }}
 		{{ ip_address }}
 		{{ not_found }}
-		</div>
 		{{ report_summary_table }}
 		{{ raw_headers_table }}
 	</body>

@@ -7,7 +7,7 @@ import sys, requests
 init(autoreset=True)
 verifier = Verifier()
 
-def print_info(list_info):
+def print_info(list_info): #renombrar mejor site_info
 	url = list_info[0]
 	ip = list_info[1]
 	raw_headers = list_info[2]

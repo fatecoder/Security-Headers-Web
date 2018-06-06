@@ -31,15 +31,15 @@ def index():
 	if URLstring:
 		page_info = verifier.get_page_info(URLstring)
 		if page_info != None:
-			url = Markup("<p>URL: %s</p>" % page_info[0])
-			ip = Markup("<p>IP Address: %s</p>" % page_info[1])
+			url = Markup("<p class='extra-info'><span class='important'>URL:</span> %s</p>" % page_info[0])
+			ip = Markup("<p class='extra-info'><span class='important'>IP Address:</span> %s</p>" % page_info[1])
 			raw_headers = page_info[2]
 			security_headers = page_info[3]
 			report_summary_table = Markup(make_report_summary_table(security_headers))
 			raw_headers_table = Markup(make_raw_headers_table(raw_headers))
 
 		else:
-			not_found = "PAGE NOT FOUND"
+			not_found = Markup("<p class='extra-info'><span class='important'>PAGE NOT FOUND</span></p>")
 	return render_template("index.html",
 							url_site = url,
 							ip_address = ip,
